@@ -1,0 +1,16 @@
+Metadata-Version: 1.1
+Name: math2d
+Version: 0.6
+Summary: 2D mathematics package for Python.
+Home-page: http://git.automatics.dyndns.dk/?p=pymath2d.git
+Author: Morten Lind
+Author-email: morten@lind.dyndns.dk
+License: GNU General Public License v3
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python
+Classifier: Topic :: Scientific/Engineering
+Provides: math2d
