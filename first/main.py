@@ -18,9 +18,14 @@ class Activity:
 
 
 class Logic:
+    """
+    Class, that implements the main logic of finding complete predecessors and root activities list
+
+    """
     def __init__(self, activities):
         self.activities = activities
 
+    # Python implementation of js `has` method
     @staticmethod
     def has(activities, uniquepredecessor):
         for activity in activities:
@@ -28,6 +33,7 @@ class Logic:
                 return activity
         return False
 
+    # Check if the predecessor is unique. Written to extend the logic of reduce function in get_root
     @staticmethod
     def define_unique(accumulator, activity):
         if activity.predecessors:
@@ -35,11 +41,13 @@ class Logic:
                 accumulator.add(predecessor)
         return accumulator
 
+    # Get the root node
     def get_root(self):
         uniquepredecessor = reduce(Logic.define_unique, self.activities, set())
         root = Logic.has(self.activities, uniquepredecessor)
         return root
 
+    # Get the complete predecessors set for each node
     @staticmethod
     def retrieve_predecessors(root, activities):
         root.complete_predecessorcs = set()
@@ -53,6 +61,7 @@ class Logic:
             root.complete_predecessorcs.add(id)
         return root
 
+# Breadth-first search implementation
 def BFS(s, graph):
     visited = [False] * (len(graph))
     queue = []
@@ -79,15 +88,14 @@ def without(d, keys={"Name"}):
 if __name__ == '__main__':
     work_list = []
 
+    # Going trough the csv to shape the list of Activity objects
     with open('data/data1.csv', newline='') as csv_file:
         reader = csv.reader(csv_file)
         next(reader, None)
         for id, predecessors, hours in reader:
             work_list.append(Activity(id, hours, predecessors))
 
-    id_df = [work.id for work in work_list]
-    predecessors_df = [work.predecessors for work in work_list]
-
+    # Creating the Logic instance to do the main calculations
     Logic = Logic(work_list)
     root = Logic.get_root()
 
@@ -95,8 +103,8 @@ if __name__ == '__main__':
     for work in work_list:
         Logic.retrieve_predecessors(work, work_list)
 
+    # Generates a list of activities which do not have predecessors
     rootlist = [work.id for work in work_list if not work.complete_predecessorcs]
-    print(rootlist)
 
     for q in range(1, 2):
         start = []
@@ -106,22 +114,24 @@ if __name__ == '__main__':
         new = []
         st = ""
         data = pd.read_csv("data/data1.csv")
+        # Adding the finish node
         last = data.iloc[-1, 0]
         last = chr(ord(last)+1)
 
-        # -------------------------------------------
+        # Forming the predecessors
         for j in range(len(data)):
             for k in range(len(data.iloc[j, 1])):
                 if data.iloc[j, 1][k] != '-':
                     new.append(data.iloc[j, 1][k])
-        # -------------------------------------------
+
+        # Creating the string of nodes that have no predecessors
         for j in range(len(data)):
             if not data.iloc[j, 0] in new:
                 st = st+data.iloc[j, 0]
-        # ------------------------------------------
 
         df = pd.DataFrame([[last, st, 0]], columns=["ac", "pr", "du"])
 
+        # Getting the graph representation of csv table
         data = data.append(df)
         for i in range(len(data)):
             graph.append([])
@@ -147,6 +157,7 @@ if __name__ == '__main__':
 
         atts[-1]["Name"] = "End"
 
+        # Create the digraph instance of networkx for visualisation and adding all the graph data there
         G2 = nx.DiGraph()
         mtnodes = []
 
@@ -155,10 +166,12 @@ if __name__ == '__main__':
                 mtnodes.append(i)
             for j in graph[i]:
                 G2.add_edge(atts[i]["Name"], atts[j]["Name"])
+
         temp = []
         G2.add_node("Start")
         for root in rootlist:
             G2.add_edge("Start", root)
+            
         for i in range(len(atts)):
             temp.append(atts[i]["Name"])
         temp = dict(zip(temp, atts))
